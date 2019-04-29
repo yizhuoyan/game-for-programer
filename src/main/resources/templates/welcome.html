@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${application['app.name']}"></title>
+</head>
+<body>
+    <h1 th:text="${application['app.name']}"></h1>
+    <hr>
+    <article>
+         <h2>闯关方法：</h2>
+	    	<p>    
+	        	请根据每个关卡的提示找到进入下一关的方法。
+	        </p>
+	        <p>
+	        	说明:您的浏览器必须启动JavaScript以及启用Cookie
+	        </p>
+        <p>
+        	<button onclick="location.href='/01'">好的，来吧，开始!</button>  	
+        </p>
+    </article>
+    
+      
+</body>
+</html>

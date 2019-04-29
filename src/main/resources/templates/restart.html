@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${application['app.name']}"></title>
+</head>
+<body>
+    <h1>你确定要重来？</h1>
+    <p>
+
+        <a href="/restart">确定重来</a>
+
+        <a href="/continue">算了接着刚才关卡继续</a>
+    </p>
+</body>
+</html>

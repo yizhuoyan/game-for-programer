@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>第3关</title>
+</head>
+<body>
+
+    <h1>第3关/共11关</h1>
+
+    <p>看得见，不一定摸得着</p>
+
+    <form action="/03" method="post">
+        <label><input size="40" name="key" th:placeholder="${session.key}"></label>
+        <button type="button" onclick="alert('你太天真了')">进入下一关</button>
+    </form>
+
+</body>
+</html>
