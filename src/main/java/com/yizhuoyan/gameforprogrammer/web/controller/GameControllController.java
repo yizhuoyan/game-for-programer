@@ -67,6 +67,7 @@ public class GameControllController {
 		}
 		if(pgs.getCurrentLevel()>=PlayerGameStatus.MAX_LEVEL) {
 			req.getSession().invalidate();
+			req.setAttribute("code", String.valueOf(Math.random()).subSequence(2, 5));
 			return "/win.html";
 		}
 		return "forward:/need-warning";

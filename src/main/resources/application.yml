@@ -1,8 +1,8 @@
 app:
   name: 庆五一程序员闯关大赛
-  
+ 
 server:
-  port: 1111
+  port: 51
 spring:
   thymeleaf:
     prefix: classpath:/templates
@@ -10,6 +10,5 @@ spring:
   mvc:
     locale: zh_CN
   application:
-    name: ${app.name}
-    
+    name: ${app.name}  session:    timeout: 10m
     

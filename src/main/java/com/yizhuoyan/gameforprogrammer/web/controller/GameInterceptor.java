@@ -26,6 +26,7 @@ public class GameInterceptor implements HandlerInterceptor {
 			}
 		}
 		s = s.substring(0, numberEndIndex);
+		if(s.length()==0)return null;
 		return Integer.parseInt(s, 10);
 	}
 
@@ -35,8 +36,11 @@ public class GameInterceptor implements HandlerInterceptor {
 		HttpSession session = req.getSession();
 		String uri = req.getRequestURI();
 		uri = uri.substring(req.getContextPath().length() + 1);
-		int requestLevel = parseInt(uri);
-
+		Integer requestLevel = parseInt(uri);
+		if(requestLevel==null) {
+			req.getRequestDispatcher("/continue").forward(req, response);
+			return false;
+		}
 		PlayerGameStatus pgs = (PlayerGameStatus) session.getAttribute(PlayerGameStatus.class.getName());
 		// 无当前关卡信息
 		if (pgs == null) {
