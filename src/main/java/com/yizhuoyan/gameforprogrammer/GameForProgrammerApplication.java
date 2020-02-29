@@ -22,30 +22,20 @@ import com.yizhuoyan.gameforprogrammer.domain.PlayerGameStatus;
 import com.yizhuoyan.gameforprogrammer.web.controller.GameInterceptor;
 
 @SpringBootApplication
-public class GameForProgrammerApplication {
+public class GameForProgrammerApplication
+		implements WebMvcConfigurer, ApplicationListener<ServletWebServerInitializedEvent> {
 
-	@Configuration
-	public static class WebMVCConfig implements WebMvcConfigurer {
-		@Override
-		public void addInterceptors(InterceptorRegistry registry) {
-			registry.addInterceptor(new GameInterceptor())
-
-					.addPathPatterns(IntStream.range(1, PlayerGameStatus.MAX_LEVEL)
-							.mapToObj(i -> i > 9 ? "/" + i : "/0" + i).collect(Collectors.toList()));
-		}
-
+	public void addInterceptors1(InterceptorRegistry registry) {
+		registry.addInterceptor(new GameInterceptor()).addPathPatterns(IntStream.range(1, PlayerGameStatus.MAX_LEVEL)
+				.mapToObj(i -> i > 9 ? "/" + i : "/0" + i).collect(Collectors.toList()));
 	}
 
-	@Component
-	public static class MyApplicationnListener implements ApplicationListener<ServletWebServerInitializedEvent> {
-		@Override
-		public void onApplicationEvent(ServletWebServerInitializedEvent event) {
-			ConfigurableEnvironment environment = event.getApplicationContext().getEnvironment();
-			ServletContext servletContext = event.getApplicationContext().getServletContext();
-			Arrays.asList("app.name").forEach(k -> {
-				servletContext.setAttribute(k, environment.getProperty(k));
-			});
-		}
+	public void onApplicationEvent(ServletWebServerInitializedEvent event) {
+		ConfigurableEnvironment environment = event.getApplicationContext().getEnvironment();
+		ServletContext servletContext = event.getApplicationContext().getServletContext();
+		Arrays.asList("app.name").forEach(k -> {
+			servletContext.setAttribute(k, environment.getProperty(k));
+		});
 	}
 
 	public static void main(String[] args) {

@@ -1,9 +1,8 @@
 app:
-  day: 庆五一
-  name: ${app.day}-程序员闯关大赛
+  name: 庆五一程序员闯关大赛
+ 
 server:
-# port: ${random.int(10000,20000)}
-  port: 9999
+  port: 51
 spring:
   thymeleaf:
     prefix: classpath:/templates

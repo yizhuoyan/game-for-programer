@@ -68,7 +68,7 @@ public class GameLevelController implements AlgorithmUtil {
 
 	// 注释
 	@GetMapping("/02")
-	public String level02(String key) {
+	public String levelInComment(String key) {
 		PlayerGameStatus pgs = getPlayerGameStatus();
 		if (pgs.passCurrentLevel(key)) {
 			return "redirect:/03";
@@ -79,9 +79,9 @@ public class GameLevelController implements AlgorithmUtil {
 		return "/02.html";
 	}
 
-	// 必须post
+	// 必须get
 	@RequestMapping("/03")
-	public String level03(String key, HttpServletRequest req) {
+	public String levelMustGetMethod(String key, HttpServletRequest req) {
 		PlayerGameStatus pgs = getPlayerGameStatus();
 		if (req.getMethod().equalsIgnoreCase("GET")) {
 			if (pgs.passCurrentLevel(key)) {
@@ -92,37 +92,52 @@ public class GameLevelController implements AlgorithmUtil {
 		newCurrentLevelKey();
 		return "/03.html";
 	}
-
-	// head
-	@GetMapping("/04")
-	public String level04(String key, HttpServletResponse resp) {
+	// 必须post
+	@RequestMapping("/04")
+	public String levelMustPostMethod(String key, HttpServletRequest req) {
 		PlayerGameStatus pgs = getPlayerGameStatus();
-		if (pgs.passCurrentLevel(key)) {
-			return "redirect:/05";
+		if (req.getMethod().equalsIgnoreCase("POST")) {
+			if (pgs.passCurrentLevel(key)) {
+				return "redirect:/05";
+			}
 		}
 		// 失败，重新生成key
-		resp.setHeader("key", newCurrentLevelKey());
+		newCurrentLevelKey();
 		return "/04.html";
 	}
 
-	// cookie
+	// head
 	@GetMapping("/05")
-	public String level05(String key, HttpServletRequest req, HttpServletResponse resp) {
+	public String levelKeyInResponceHeader(String key, HttpServletResponse resp) {
+		PlayerGameStatus pgs = getPlayerGameStatus();
+		if (pgs.passCurrentLevel(key)) {
+			return "redirect:/06";
+		}
+		// 失败，重新生成key
+		resp.setHeader("key", newCurrentLevelKey());
+		return "/05.html";
+	}
+
+	// cookie
+	@GetMapping("/06")
+	public String levelCookie(String key, HttpServletRequest req, HttpServletResponse resp) {
 
 		PlayerGameStatus pgs = getPlayerGameStatus();
 		// key-cookie消失
 		if (!containsKeyCookie(req)) {
 			if (pgs.passCurrentLevel(key)) {
-				return "redirect:/06";
+				return "redirect:/07";
 			}
 		}
 		// 失败，重新生成key
 		Cookie cookie = new Cookie("key", newCurrentLevelKey());
 		// 保证浏览器不失效
 		cookie.setMaxAge(Integer.MAX_VALUE);
+		cookie.setPath("/deleteMePass");
+		cookie.setVersion(1);
 		resp.addCookie(cookie);
 
-		return "/05.html";
+		return "/06.html";
 	}
 
 	private boolean containsKeyCookie(HttpServletRequest req) {
@@ -141,19 +156,19 @@ public class GameLevelController implements AlgorithmUtil {
 	/**
 	 * 二维码扫码
 	 */
-	@GetMapping("/06")
-	public String level06(String key) {
+	@GetMapping("/07")
+	public String levelScan(String key) {
 		PlayerGameStatus pgs = getPlayerGameStatus();
 		if (pgs.passCurrentLevel(key)) {
-			return "redirect:/07";
+			return "redirect:/08";
 		}
 		// 失败，重新生成key
 		newCurrentLevelKey();
-		return "/06.html";
+		return "/07.html";
 	}
 
-	@GetMapping("/06.png")
-	public void level06Img(HttpServletResponse resp) throws IOException {
+	@GetMapping("/07.png")
+	public void generateBase64QRCodeImg(HttpServletResponse resp) throws IOException {
 		PlayerGameStatus pgs = getPlayerGameStatus();
 		resp.setContentType("image/png");
 		// 失败，重新生成key
@@ -177,23 +192,22 @@ public class GameLevelController implements AlgorithmUtil {
 	 * 
 	 * @throws IOException
 	 */
-	@GetMapping("/07")
-	public String level07(String key, HttpServletResponse resp) throws IOException {
+	@GetMapping("/08")
+	public String levelHideInImg(String key, HttpServletResponse resp) throws IOException {
 		PlayerGameStatus pgs = getPlayerGameStatus();
 		if (pgs.passCurrentLevel(key)) {
-			return "redirect:/08";
+			return "redirect:/09";
 		}
 		// 失败，重新生成key
 		newCurrentLevelKey();
-		return "/07.html";
+		return "/08.html";
 
 	}
 
-	@GetMapping("/07.png")
-	public void level07Img(HttpServletResponse resp) throws IOException {
+	@GetMapping("/08.png")
+	public void generateHideBytesInQRImg(HttpServletResponse resp) throws IOException {
 		PlayerGameStatus pgs = getPlayerGameStatus();
 		resp.setContentType("image/png");
-
 		AbstractQRCode qrCode = QRCode.from("怎么可能还这么简单？");
 		// 设置字符集，支持中文
 		qrCode.withCharset("utf-8");
@@ -204,6 +218,7 @@ public class GameLevelController implements AlgorithmUtil {
 		try (ServletOutputStream out = resp.getOutputStream();) {
 			out.write(data.toByteArray());
 			String key = pgs.getCurrentLevelKey();
+			out.write(new byte[8]);//给8个空字节分割
 			out.write(key.getBytes("iso-8859-1"));
 		}
 	}
@@ -213,19 +228,19 @@ public class GameLevelController implements AlgorithmUtil {
 	 * 
 	 * @param key
 	 */
-	@GetMapping("/08")
-	public String level08(String key) {
+	@GetMapping("/09")
+	public String levelSeedImg(String key) {
 		PlayerGameStatus pgs = getPlayerGameStatus();
 		if (pgs.passCurrentLevel(key)) {
-			return "redirect:/09";
+			return "redirect:/10";
 		}
 		// 失败，重新生成key
 		newCurrentLevelKey();
-		return "/08.html";
+		return "/09.html";
 	}
 
-	@GetMapping("/08.png")
-	public void level08Img(HttpServletResponse resp) throws IOException {
+	@GetMapping("/09.png")
+	public void genereateSeedImg(HttpServletResponse resp) throws IOException {
 		PlayerGameStatus pgs = getPlayerGameStatus();
 		resp.setContentType("image/jpeg");
 		String key = pgs.getCurrentLevelKey();
@@ -242,8 +257,13 @@ public class GameLevelController implements AlgorithmUtil {
 			out.write(zipData);
 		}
 	}
-
-	public byte[] createZipFile(String key) throws IOException {
+	/**
+	 * 创建压缩文件
+	 * @param key
+	 * @return
+	 * @throws IOException
+	 */
+	private byte[] createZipFile(String key) throws IOException {
 		ByteArrayOutputStream data = new ByteArrayOutputStream();
 		try (ZipOutputStream out = new ZipOutputStream(data);) {
 			out.putNextEntry(new ZipEntry("1"));
@@ -256,38 +276,44 @@ public class GameLevelController implements AlgorithmUtil {
 	}
 
 	// 2进制形式
-	@GetMapping("/09")
-	public String level09(String key, HttpServletRequest req, HttpServletResponse resp) throws Exception {
-		PlayerGameStatus pgs = getPlayerGameStatus();
-		if (pgs.passCurrentLevel(key)) {
-			return "redirect:/10";
-		}
-		// 失败，重新生成key
-		key = newCurrentLevelKey();
-		StringBuilder result = new StringBuilder();
-		for (int i = 0; i < key.length(); i++) {
-			result.append(to8bitsString(key.charAt(i)));
-		}
-		req.setAttribute("tips", result.toString());
-		return "/09.html";
-	}
-
-	// morse code
 	@GetMapping("/10")
-	public String level10(String key, HttpServletRequest req) {
+	public String levelShowBinary(String key, HttpServletRequest req, HttpServletResponse resp) throws Exception {
 		PlayerGameStatus pgs = getPlayerGameStatus();
 		if (pgs.passCurrentLevel(key)) {
 			return "redirect:/11";
 		}
 		// 失败，重新生成key
-		String tipsString = morseCode(newCurrentLevelKey());
-		req.setAttribute("tips", tipsString);
+		key = newCurrentLevelKey();
+		StringBuilder result = new StringBuilder();
+		for (int i = 0; i < key.length(); i++) {
+			if(i<=8) {
+				result.append(to8bitsString(key.charAt(i)));
+			}else {
+				result.append(key.charAt(i));
+			}
+		}
+		req.setAttribute("tips", result.toString());
 		return "/10.html";
 	}
 
-	// 404方式
+	// morse code
 	@GetMapping("/11")
-	public String level11(String key, HttpServletRequest req) {
+	public String levelShowMoreCode(String key, HttpServletRequest req) {
+		PlayerGameStatus pgs = getPlayerGameStatus();
+		if (pgs.passCurrentLevel(key)) {
+			return "redirect:/12";
+		}
+		// 失败，重新生成key
+		key=newCurrentLevelKey();
+		String moreCode = morseCode(key.substring(0,16));
+		
+		req.setAttribute("tips", moreCode+" "+key.substring(16));
+		return "/11.html";
+	}
+
+	// 404方式
+	@GetMapping("/12")
+	public String level404(String key, HttpServletRequest req) {
 
 		PlayerGameStatus pgs = getPlayerGameStatus();
 		if (pgs.passCurrentLevel(key)) {
@@ -295,7 +321,7 @@ public class GameLevelController implements AlgorithmUtil {
 		}
 		// 失败，重新生成key
 		newCurrentLevelKey();
-		return "/11.html";
+		return "/12.html";
 	}
 
 	@ExceptionHandler

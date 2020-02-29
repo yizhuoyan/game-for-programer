@@ -8,7 +8,7 @@ import com.yizhuoyan.gameforprogrammer.util.AlgorithmUtil;
  * Created by ben on 10/27/18.
  */
 public class PlayerGameStatus implements AlgorithmUtil{
-    public static final int MAX_LEVEL=11;
+    public static final int MAX_LEVEL=12;
     int currentLevel;
     String currentLevelKey;
 
