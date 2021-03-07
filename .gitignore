@@ -1,15 +1,7 @@
-/target/
+/target
 
-#idea
-/.idea/
-/*.iml
+.idea/
+*.iml
 
-# eclipse
-/.settings/
-/.classpath
-/.project
-
-# sts
-/.springBeans
 
 

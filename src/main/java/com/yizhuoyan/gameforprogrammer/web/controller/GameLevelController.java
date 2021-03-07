@@ -180,6 +180,7 @@ public class GameLevelController implements AlgorithmUtil {
 		// 设置生成的二维码图片大小
 		qrCode.withSize(260, 260);
 		ByteArrayOutputStream data = qrCode.to(ImageType.PNG).stream();
+
 		try (ServletOutputStream out = resp.getOutputStream();) {
 			out.write(data.toByteArray());
 		}

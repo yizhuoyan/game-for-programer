@@ -1,9 +1,6 @@
-app:
-  day: 庆余生
-  name: ${app.day}-程序员闯关大赛
+# for ignore utf-8 bom
 server:
-# port: ${random.int(10000,20000)}
-  port: 9999
+  port: 1024
 spring:
   thymeleaf:
     prefix: classpath:/templates
@@ -11,5 +8,10 @@ spring:
   mvc:
     locale: zh_CN
   application:
-    name: ${app.name}  session:    timeout: 15m
-    
+    name: ${app.name}
+  session:
+    timeout: 15m
+
+app:
+  day: 庆余生
+  name: ${app.day}-程序员闯关大赛

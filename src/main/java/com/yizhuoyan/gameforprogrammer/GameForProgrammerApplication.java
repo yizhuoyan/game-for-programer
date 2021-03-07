@@ -25,7 +25,7 @@ import com.yizhuoyan.gameforprogrammer.web.controller.GameInterceptor;
 public class GameForProgrammerApplication
 		implements WebMvcConfigurer, ApplicationListener<ServletWebServerInitializedEvent> {
 
-	public void addInterceptors1(InterceptorRegistry registry) {
+	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(new GameInterceptor()).addPathPatterns(IntStream.range(1, PlayerGameStatus.MAX_LEVEL)
 				.mapToObj(i -> i > 9 ? "/" + i : "/0" + i).collect(Collectors.toList()));
 	}
@@ -39,7 +39,7 @@ public class GameForProgrammerApplication
 	}
 
 	public static void main(String[] args) {
-
+		System.setProperty("file.encoding", "UTF-8");
 		SpringApplication.run(GameForProgrammerApplication.class, args);
 
 	}

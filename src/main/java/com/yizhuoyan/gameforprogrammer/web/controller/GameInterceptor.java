@@ -30,14 +30,35 @@ public class GameInterceptor implements HandlerInterceptor {
 		return Integer.parseInt(s, 10);
 	}
 
+	private Integer getRequestLevel(HttpServletRequest req){
+		String uri = req.getRequestURI();
+		uri = uri.substring(req.getContextPath().length() + 1);
+		try {
+			Integer requestLevel = parseInt(uri);
+			return requestLevel;
+		}catch (NumberFormatException e){
+			return null;
+		}
+	}
 	@Override
 
 	public boolean preHandle(HttpServletRequest req, HttpServletResponse response, Object handler) throws Exception {
-		HttpSession session = req.getSession();
-		String uri = req.getRequestURI();
-		uri = uri.substring(req.getContextPath().length() + 1);
-		Integer requestLevel = parseInt(uri);
+		//第一次进入
+		if(req.getRequestedSessionId()==null){
+			response.sendRedirect("/");
+			return false;
+		}
+
+		HttpSession session = req.getSession(false);
+		//session超时
+		if(session==null){
+			req.getRequestDispatcher("/timeout").forward(req, response);
+			return false;
+		}
+		//获取请求关卡
+		Integer requestLevel=getRequestLevel(req);
 		if(requestLevel==null) {
+			//继续当前关卡
 			req.getRequestDispatcher("/continue").forward(req, response);
 			return false;
 		}
