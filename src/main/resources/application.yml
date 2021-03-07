@@ -1,5 +1,5 @@
 app:
-  day: 庆五一
+  day: 庆余生
   name: ${app.day}-程序员闯关大赛
 server:
 # port: ${random.int(10000,20000)}
@@ -11,5 +11,5 @@ spring:
   mvc:
     locale: zh_CN
   application:
-    name: ${app.name}  session:    timeout: 10m
+    name: ${app.name}  session:    timeout: 15m
     

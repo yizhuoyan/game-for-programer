@@ -9,15 +9,16 @@
     <hr>
     <article>
          <h2>闯关方法：</h2>
+		<hr>
 	    	<p>    
 	        	请根据每个关卡的提示找到进入下一关的方法。
-	        
+	        </p>
+		<hr>
+	        <p>
+	        <strong>警告:每个关卡的通关时间只有<b th:text="${application['spring.session.timeout']}">15</b>分钟</strong>
 	        </p>
 	        <p>
-	        <strong>警告:每个关卡的通关时间只有10分钟</strong>
-	        </p>
-	        <p>
-	        	说明:您的浏览器必须启动JavaScript以及启用Cookie
+	        	<em>说明:您的浏览器必须启动JavaScript以及启用Cookie</em>
 	        </p>
         <p>
         	<button onclick="location.href='/01'">好的，来吧，开始!</button>  	
